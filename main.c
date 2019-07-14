@@ -26,7 +26,7 @@ int main() {
     char *com[]={NULL, NULL};
     int number;
     fp = popen("/bin/playerctl status && /bin/playerctl metadata xesam:title && /bin/playerctl metadata xesam:artist", "r");
-    printf("%s",fp);
+    //printf("%s",fp);
     fgets(status, sizeof(path), fp);
     status[strlen(status)-1] = '\0';
     fgets(title, sizeof(path)-1, fp);
@@ -37,15 +37,32 @@ int main() {
 
     int sum;
     int n;
+    int off;
     FILE *ffp;
     ffp = fopen("/home/dyllan/CLionProjects/music/number", "r");
     fscanf (ffp, "%d", &number);
     number++;
     sum = strlen(title) + strlen(artist) + 2;
-    n = ceil((float)sum/7);
+    n = ceil((double)sum/7);
+    //printf("%c",'&');
     com[0] = artist;
     strcat(com[0],": ");
     strcat(com[0],title);
+    if (7*n > sum){
+        off = 7*n;
+        while (off > 0){
+            strcat(com[0]," ");
+            off --;
+        }
+
+    }
+    off = 0;
+    while (off < sum){
+        if (com[0][off] == '&' || com[0][off] == '<' || com[0][off] == '>' || com[0][off] == '=' || com[0][off] == '|'){
+            com[0][off] = '*';
+        }
+        off++;
+    }
     strncpy(one, com[0]+0, n);
     if (strlen(one) > n){
         one[strlen(one)-1] = '\0';
@@ -140,13 +157,13 @@ int main() {
         si = 0;
     }
     if (strncmp(status, "Playing", 6)==0){
-       // printf("<txt><span color='%s'>%.*s</span><span color='%s'>%.*s</span><span color='%s'>%.*s</span><span color='%s'>%.*s"
-          //     "</span><span color='%s'>%.*s</span><span color='%s'>%.*s</span><span color='%s'>%.*s  </span></txt>",strings[z]
-            //   ,n,one,strings[o],n,two,strings[t],n,tre,strings[tr],n,four,strings[f],n,five,strings[fi],n,six,strings[si],n,sev);
+      printf("<txt><span color='%s'>%.*s</span><span color='%s'>%.*s</span><span color='%s'>%.*s</span><span color='%s'>%.*s"
+            "</span><span color='%s'>%.*s</span><span color='%s'>%.*s</span><span color='%s'>%.*s  </span></txt>",strings[z]
+             ,n,one,strings[o],n,two,strings[t],n,tre,strings[tr],n,four,strings[f],n,five,strings[fi],n,six,strings[si],n,sev);
     } else if(strncmp(status, "Paused", 6)==0){
-        //printf("<txt><span color='%s'>%s  </span></txt>",strings[6],status);
+        printf("<txt><span color='%s'>%s  </span></txt>",strings[6],status);
     } else{
-       // printf("<txt><span color='%s'>'Spotify Closed'  </span></txt>",strings[6]);
+       printf("<txt><span color='%s'>Spotify Closed  </span></txt>",strings[6]);
     }
 
 
